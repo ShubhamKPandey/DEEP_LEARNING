@@ -83,8 +83,10 @@ print(y_valid.shape, y_train.shape)
 input = tf.keras.layers.Input(shape = (steps,1))
 x = tf.keras.layers.SimpleRNN(20, return_sequences =True)(input)
 x = keras.layers.RNN(LNSimpleRNNCell(20), return_sequences=True)(x)
-y = keras.layers.TimeDistributed(keras.layers.Dense(10))(x)
-
+for rate in (1, 2, 4, 8) * 2:
+    keras.layers.Conv1D(filters=20, kernel_size=2,padding="causal",activation="relu", dilation_rate=rate)(x)
+    
+y= keras.layers.Conv1D(filters=10, kernel_size=1)(x)
 
 model = tf.keras.Model(inputs = [input], outputs = [y])
 print(model.summary())
