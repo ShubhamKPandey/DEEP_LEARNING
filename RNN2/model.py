@@ -15,10 +15,24 @@ with open(filepath) as f:
 
 tokenizer = keras.preprocessing.text.Tokenizer(char_level = True)
 tokenizer.fit_on_texts([shakespeare_text])
+
 print(tokenizer.document_count)
 
-print(np.array(tokenizer.texts_to_sequences([shakespeare_text])))
+dataset_size = tokenizer.document_count
+max_id = len(tokenizer.word_index)
+
 print(np.array(tokenizer.sequences_to_texts([[34, 5, 6, 23, 7]])))
 
 [encoded] = np.array(tokenizer.texts_to_sequences([shakespeare_text])) - 1
 print(encoded)
+
+train_size = dataset_size*90//100
+dataset = tf.data.Dataset.from_tensor_slices(encoded[:train_size])
+
+n_steps = 100
+window_length  = n_steps + 1
+dataset = dataset.window(window_length, shift = 1, drop_remainder = True )
+
+
+
+
